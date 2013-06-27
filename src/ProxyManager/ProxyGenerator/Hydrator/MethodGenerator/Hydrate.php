@@ -54,7 +54,7 @@ class Hydrate extends MethodGenerator
         foreach ($propertyAccessors as $propertyAccessor) {
             $body .= '$this->'
                 . $propertyAccessor->getName()
-                . '->setValue($object, $data['
+                . '->__invoke($object, $data['
                 . var_export($propertyAccessor->getOriginalProperty()->getName(), true)
                 . "]);\n";
         }

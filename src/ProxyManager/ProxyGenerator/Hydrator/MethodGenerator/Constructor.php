@@ -38,16 +38,18 @@ class Constructor extends MethodGenerator
         parent::__construct('__construct');
 
         $this->setDocblock("@param \\ReflectionProperty[] \$propertyAccessors to hydrate private properties");
-        $this->setParameter(new ParameterGenerator('propertyAccessors', 'array'));
+        //$this->setParameter(new ParameterGenerator('propertyAccessors', 'array'));
 
         $body = '';
 
         foreach ($propertyAccessors as $propertyAccessor) {
-            $body .= '$this->'
-                . $propertyAccessor->getName()
-                . ' = $propertyAccessors['
-                . var_export($propertyAccessor->getOriginalProperty()->getName(), true)
-                . "];\n";
+            $originalProperty = $propertyAccessor->getOriginalProperty();
+
+            $body .= '$this->' . $propertyAccessor->getName()
+                . ' = \Closure::bind(function ($object, $value) { $object->'
+                . $originalProperty->getName() . ' = $value; }, null, '
+                . var_export($originalProperty->getDeclaringClass()->getName(), true)
+                . ");\n";
         }
 
         $this->setBody($body);
