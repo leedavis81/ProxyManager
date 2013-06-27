@@ -51,12 +51,15 @@ class Hydrate extends MethodGenerator
                 . "];\n";
         }
 
+        if (! empty($propertyAccessors)) {
+            $body .= "\n\$this->foobarbaztab = \$data;\n\n";
+        }
+
         foreach ($propertyAccessors as $propertyAccessor) {
+            // @todo object by reference?
             $body .= '$this->'
                 . $propertyAccessor->getName()
-                . '->__invoke($object, $data['
-                . var_export($propertyAccessor->getOriginalProperty()->getName(), true)
-                . "]);\n";
+                . "->__invoke(\$object);\n";
         }
 
         $body .= "\nreturn \$object;";
